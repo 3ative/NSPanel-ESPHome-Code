@@ -6,7 +6,8 @@
 
 ![image](https://user-images.githubusercontent.com/51385971/162554891-85de1ddb-0614-4771-9911-e5eb020f0811.png)
 ___
-* ### Parts 1 & 2 : Building the GUI: _Will Be Public Soon_
+* ### Tutorial Part 3: Flashing with ESPHome - _Will Be Public Soon_
+* ### Parts 1 & 2 : [Building the GUI](https://github.com/3ative/NSPanel-Building-the-GUI)
 * ### Link to Part 4: TBA
 ___
 
