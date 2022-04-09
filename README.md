@@ -4,7 +4,7 @@
 * 1 - Use the '***Code***' button above (_Top Right_)
 * 2 - Use '***Download ZIP**'* to get all the files
 
-![image](https://user-images.githubusercontent.com/51385971/162431957-be0a7d8f-65eb-4f57-a56b-6e0b8b64f157.png)
+![image](https://user-images.githubusercontent.com/51385971/162554891-85de1ddb-0614-4771-9911-e5eb020f0811.png)
 ___
 * ### Parts 1 & 2 : Building the GUI: _Will Be Public Soon_
 * Link to Part 4: TBA
