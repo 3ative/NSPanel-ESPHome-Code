@@ -7,7 +7,7 @@
 ![image](https://user-images.githubusercontent.com/51385971/162554891-85de1ddb-0614-4771-9911-e5eb020f0811.png)
 ___
 * ### Parts 1 & 2 : Building the GUI: _Will Be Public Soon_
-* Link to Part 4: TBA
+* ### Link to Part 4: TBA
 ___
 
 🎁 Found this useful or want to say 'thanks' and support my efforts...
