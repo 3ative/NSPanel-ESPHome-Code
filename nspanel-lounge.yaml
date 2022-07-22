@@ -23,16 +23,16 @@ wifi:
 
 logger:
   baud_rate: 0
-  # logs:
-    # rtttl: none
+  logs:
+    rtttl: none
     # homeassistant: none
     # binary_sensor: none
     # nextion: none
-    # ledc.output: none
-    # resistance: none
-    # ntc: none
-    # sensor: none
-    # climate: none
+    ledc.output: none
+    resistance: none
+    ntc: none
+    sensor: none
+    climate: none
     # homeassistant.sensor: none
 
 ota:
@@ -51,7 +51,7 @@ api:
         - lambda: "id(nspanel)->upload_tft();"
 
 binary_sensor:
-  ############ Main Page Button1 Component change Entity1
+  ############ binary_sensor Read Button1 Component and Toggle Entity1
   - platform: nextion
     id: button1
     page_id: 0
@@ -62,19 +62,19 @@ binary_sensor:
           data:
             entity_id: $entity1
 
-
-  ############ Read Entity1 and change Button1 Component
-  # binary_sensor
+  ############ binary_sensor Match Button1 Component's State to Entity1's State
   - platform: homeassistant
     id: entity1
     entity_id: $entity1
     on_state:
       - lambda: 'id(nspanel).send_command_printf("main.button1.val=%d",id(entity1).state);'
-
+      
+  ############ binary_sensor Entity1's Up/Down Buttons
   - platform: nextion
     id: button1_up
     page_id: 0
     component_id: 2
+    ## Add 10% to Entity1's Brightness
     on_press:
       - homeassistant.service:
           service: homeassistant.turn_on
@@ -87,6 +87,7 @@ binary_sensor:
     id: button1_dwn
     page_id: 0
     component_id: 3
+    ## Sub 10% from Entity1's Brightness
     on_press:
       - homeassistant.service:
           service: homeassistant.turn_on
@@ -95,98 +96,93 @@ binary_sensor:
           data_template:
             brightness_step_pct: "-10"
 
-  ############ Thermostat Controls
-  # binary_sensor
+  ############ binary_sensor Thermostat Controls
   - platform: nextion
-    id: thermobutton
+    id: my_thermo_button
     page_id: 0
     component_id: 4
     on_state:
       - if:
           condition:
-            binary_sensor.is_on: thermobutton
+            binary_sensor.is_on: my_thermo_button
           then:
             - climate.control:
-                id: ns_thermostat
+                id: my_thermostat
                 mode: HEAT_COOL
       - if:
           condition:
-            binary_sensor.is_off: thermobutton
+            binary_sensor.is_off: my_thermo_button
           then:
             - climate.control:
-                id: ns_thermostat
+                id: my_thermostat
                 mode: "OFF"
+
   - platform: nextion
-    id: temp_up
+    id: thermo_up
     page_id: 0
     component_id: 5
     on_press:
       - climate.control:
-          id: ns_thermostat
+          id: my_thermostat
           target_temperature_low: !lambda |-
-            return id(ns_thermostat).target_temperature_low + 0.5;
-      - climate.control:
-          id: ns_thermostat
+            return id(my_thermostat).target_temperature_low + 0.5;
           target_temperature_high: !lambda |-
-            return id(ns_thermostat).target_temperature_high + 0.5;
+            return id(my_thermostat).target_temperature_high + 0.5;
 
   - platform: nextion
-    id: temp_dwn
+    id: thermo_dwn
     page_id: 0
     component_id: 6
     on_press:
       - climate.control:
-          id: ns_thermostat
+          id: my_thermostat
           target_temperature_low: !lambda |-
-            return id(ns_thermostat).target_temperature_low - 0.5;
-      - climate.control:
-          id: ns_thermostat
+            return id(my_thermostat).target_temperature_low - 0.5;
           target_temperature_high: !lambda |-
-            return id(ns_thermostat).target_temperature_high - 0.5;
+            return id(my_thermostat).target_temperature_high - 0.5;
 
-  ############ Thermostat High-Low
-  # binary_sensor
+  ############ binary_sensor Page.Thermo's High-Low Buttons
   - platform: nextion
-    id: low_up
+    id: thermostat_low_up
     page_id: 1
     component_id: 1
     on_click:
       - climate.control:
-          id: ns_thermostat
+          id: my_thermostat
           target_temperature_low: !lambda |-
-            return id(ns_thermostat).target_temperature_low + 0.5;
+            return id(my_thermostat).target_temperature_low + 0.5;
   - platform: nextion
-    id: low_dwn
+    id: thermostat_low_dwn
     page_id: 1
     component_id: 2
     on_click:
       - climate.control:
-          id: ns_thermostat
+          id: my_thermostat
           target_temperature_low: !lambda |-
-            return id(ns_thermostat).target_temperature_low - 0.5;
+            return id(my_thermostat).target_temperature_low - 0.5;
 
   - platform: nextion
-    id: high_up
+    id: thermostat_high_up
     page_id: 1
     component_id: 3
     on_click:
       - climate.control:
-          id: ns_thermostat
+          id: my_thermostat
           target_temperature_high: !lambda |-
-            return id(ns_thermostat).target_temperature_high + 0.5;
+            return id(my_thermostat).target_temperature_high + 0.5;
   - platform: nextion
-    id: high_dwn
+    id: thermostat_high_dwn
     page_id: 1
     component_id: 4
     on_click:
       - climate.control:
-          id: ns_thermostat
+          id: my_thermostat
           target_temperature_high: !lambda |-
-            return id(ns_thermostat).target_temperature_high - 0.5;
+            return id(my_thermostat).target_temperature_high - 0.5;
 
-  ############ Front Panel Buttons and Relays
-  # binary_sensor
+  ############ binary_sensor Physical Buttons and Relays
   - platform: gpio
+    id: panel_button_relay1
     name: NSP ${room} button1
     pin:
       number: 14
@@ -195,6 +191,7 @@ binary_sensor:
       - switch.toggle: relay1
       - rtttl.play: "beep:d=32,o=7,b=100: d"
   - platform: gpio
+    id: panel_button_relay2
     name: NSP ${room} button2
     pin:
       number: 27
@@ -203,8 +200,7 @@ binary_sensor:
       - switch.toggle: relay2
       - rtttl.play: "beep:d=32,o=7,b=100: d"
 
-  ############ Any Button Beep
-  # binary_sensor
+  ############ binary_sensor Any Button Beep
   - platform: nextion
     id: beeper
     page_id: 9
@@ -228,8 +224,24 @@ sensor:
               id(nspanel).send_command_printf("main.button1.val=1");
             }
 
-  ############ Read internal Temp Sensor
-  # sensor
+  ############ sensor Low & High temperatures from Climate
+  - platform: template
+    id: my_low_trg
+    lambda: |-
+      return id(my_thermostat).target_temperature_low;
+    update_interval: 0.5s
+    on_value:
+      - lambda: 'id(nspanel).set_component_text_printf("thermolowtemp", "%.1f", x);'
+
+  - platform: template
+    id: my_high_trg
+    lambda: |-
+      return id(my_thermostat).target_temperature_high;
+    update_interval: 0.5s
+    on_value:
+      - lambda: 'id(nspanel).set_component_text_printf("thermohightemp", "%.1f", x);'
+
+  ############ sensor Read internal Temp Sensor
   - platform: resistance
     id: resistance_sensor
     sensor: ntc_source
@@ -253,57 +265,37 @@ sensor:
     on_value:
       - lambda: 'id(nspanel).set_component_text_printf("temp_local", "%.1f ""\xb0""C", x);'
 
-
-  ############ Low & High temperatures from Climate
-  # sensor
-  - platform: template
-    id: my_low_trg
-    lambda: |-
-      return id(ns_thermostat).target_temperature_low;
-    update_interval: 0.5s
-    on_value:
-      - lambda: 'id(nspanel).set_component_text_printf("thermolowtemp", "%.1f", x);'
-
-  - platform: template
-    id: my_high_trg
-    lambda: |-
-      return id(ns_thermostat).target_temperature_high;
-    update_interval: 0.5s
-    on_value:
-      - lambda: 'id(nspanel).set_component_text_printf("thermohightemp", "%.1f", x);'
-
-
-
-############ Panel Buttons to control Relays
+############ switch Panel Buttons to control Relays
 switch:
   - platform: gpio
-    name: NSP ${room} relay1
     id: relay1
+    name: NSP ${room} relay1
     icon: mdi:electric-switch
     pin:
       number: 22
+    ### switch Relay1 Bar On/Off - Add one per Page
     on_turn_on:
       - lambda: id(nspanel).set_component_value("main.relay1", 1);
       - lambda: id(nspanel).set_component_value("thermo.relay1", 1);
     on_turn_off:
       - lambda: id(nspanel).set_component_value("main.relay1", 0);
       - lambda: id(nspanel).set_component_value("thermo.relay1", 0);
+  
   - platform: gpio
-    name: NSP ${room} relay2
     id: relay2
+    name: NSP ${room} relay2
     icon: mdi:electric-switch
     pin:
       number: 19
+    ### switch Relay2 Bar On/Off - Add one per Page
     on_turn_on:
       - lambda: id(nspanel).set_component_value("main.relay2", 1);
       - lambda: id(nspanel).set_component_value("thermo.relay2", 1);
-
     on_turn_off:
       - lambda: id(nspanel).set_component_value("main.relay2", 0);
       - lambda: id(nspanel).set_component_value("thermo.relay2", 0);
 
-  ############ Panel Power Pin 4 On
-  # switch
+  ############ switch Display Power Pin 4 On
   - platform: gpio
     id: panel_power
     entity_category: config
@@ -312,7 +304,7 @@ switch:
       inverted: true
     restore_mode: ALWAYS_ON
 
-############ Panel Brightness Slider for HA
+############ Display Brightness Slider for HA
 number:
   platform: template
   name: NSP ${room} brightness
@@ -331,7 +323,7 @@ number:
 ############ Setup ESP Thermostat
 climate:
   - platform: thermostat
-    id: ns_thermostat
+    id: my_thermostat
     name: NSP ${room} thermostat
     sensor: temperature
     min_cooling_off_time: 0s
@@ -344,41 +336,42 @@ climate:
       max_temperature: 30 °C
     default_target_temperature_low: 23.0
     default_target_temperature_high: 26.0
-    cool_action:
-      - homeassistant.service:
-          service: homeassistant.turn_on
-          data:
-            entity_id: ${thermo_cool}
     heat_action:
       - homeassistant.service:
           service: homeassistant.turn_on
           data:
             entity_id: ${thermo_heat}
+    cool_action:
+      - homeassistant.service:
+          service: homeassistant.turn_on
+          data:
+            entity_id: ${thermo_cool}
     idle_action:
       - homeassistant.service:
           service: homeassistant.turn_off
           data:
-            entity_id: ${thermo_cool}
+            entity_id: ${thermo_heat}
       - homeassistant.service:
           service: homeassistant.turn_off
           data:
-            entity_id: ${thermo_heat}
+            entity_id: ${thermo_cool}
     on_state:
       then:
         - lambda: |-
-            if (id(ns_thermostat).mode > 0) {
-              id(nspanel).set_component_value("main.thermobutton", 1);
+            if (id(my_thermostat).mode != 0) {
+              id(nspanel).set_component_value("main.thermo", 1);
             } else {
-              id(nspanel).set_component_value("main.thermobutton", 0);
+              id(nspanel).set_component_value("main.thermo", 0);
             };
-        - lambda: 'id(nspanel).set_component_text_printf("thermotemp", "%.1f ""\xb0""C", ((id(ns_thermostat).target_temperature_high - id(ns_thermostat).target_temperature_low)/2) + id(ns_thermostat).target_temperature_low);'
+        ## Find the Half-way point between Target High and Target Low Temperature
+        - lambda: 'id(nspanel).set_component_text_printf("main.thermotemp", "%.1f ""\xb0""C", ((id(my_thermostat).target_temperature_high - id(my_thermostat).target_temperature_low)/2) + id(my_thermostat).target_temperature_low);'
 
-############ Panel Setup
+############ DIsplay Setup
 display:
   - platform: nextion
     id: nspanel
     uart_id: tf_uart
-    tft_url: http://192.168.0.51:8123/local/nspanel/nspanel_lounge_master.tft
+    tft_url: http://192.168.0.51:8123/local/nspanel/NSPanel_Lounge_Master.tft
     on_setup:
       - rtttl.play: "KnRider:d=4,o=6,b=120:16d.5,32d#.5,32d.5,8a.5"
       - lambda: |-
@@ -394,7 +387,7 @@ output:
     id: buzzer_out
     pin:
       number: 21
-############ UART for Panel
+############ UART for Display
 uart:
   id: tf_uart
   tx_pin: 16
@@ -404,10 +397,3 @@ uart:
 button:
   - platform: restart
     name: NSP ${room} restart
-
-############ ESP Restart button
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      internal: true
-      id: my_ip_address
