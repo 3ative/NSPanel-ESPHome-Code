@@ -6,8 +6,9 @@
 
 ![image](https://user-images.githubusercontent.com/51385971/162554891-85de1ddb-0614-4771-9911-e5eb020f0811.png)
 ___
-* ### Tutorial Part 3: [NSPanel Custom Firmware Part 3: ESPHome Code Flashing](https://youtu.be/z4z68dyZ7dw)
-* ### Parts 1 & 2 : [Building the GUI](https://github.com/3ative/NSPanel-Building-the-GUI)
+* ### Tutorial Part 1: [Making the Graphics](https://www.youtube.com/watch?v=wPXUMat6his)
+* ### Tutorial Part 2: [Building the HMI](https://youtu.be/oj9-shP5icU)
+* ### Tutorial Part 3: [NSPanel ESPHome Code](https://youtu.be/z4z68dyZ7dw)
 * ### Link to Part 4: TBA
 ___
 
