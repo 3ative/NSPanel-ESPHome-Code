@@ -37,7 +37,7 @@ logger:
 
 ota:
 
-############ Call Services: Play rtttl string and TFT Upload
+# Call Services: Play rtttl string and TFT Upload
 api:
   services:
     - service: play_rtttl
@@ -51,7 +51,7 @@ api:
         - lambda: "id(nspanel)->upload_tft();"
 
 binary_sensor:
-  ############ binary_sensor Read Button1 Component and Toggle Entity1
+  # binary_sensor: Read Button1 Component and Toggle Entity1
   - platform: nextion
     id: button1
     page_id: 0
@@ -62,19 +62,20 @@ binary_sensor:
           data:
             entity_id: $entity1
 
-  ############ binary_sensor Match Button1 Component's State to Entity1's State
+  # binary_sensor: Match Button1 Component's State to Entity1's State
   - platform: homeassistant
     id: entity1
     entity_id: $entity1
     on_state:
       - lambda: 'id(nspanel).send_command_printf("main.button1.val=%d",id(entity1).state);'
-      
-  ############ binary_sensor Entity1's Up/Down Buttons
+
+  # binary_sensor: Entity1's Up/Down Buttons
   - platform: nextion
     id: button1_up
     page_id: 0
     component_id: 2
-    ## Add 10% to Entity1's Brightness
+
+    # Add 10% to Entity1's Brightness
     on_press:
       - homeassistant.service:
           service: homeassistant.turn_on
@@ -87,7 +88,8 @@ binary_sensor:
     id: button1_dwn
     page_id: 0
     component_id: 3
-    ## Sub 10% from Entity1's Brightness
+
+    # Sub 10% from Entity1's Brightness
     on_press:
       - homeassistant.service:
           service: homeassistant.turn_on
@@ -96,7 +98,7 @@ binary_sensor:
           data_template:
             brightness_step_pct: "-10"
 
-  ############ binary_sensor Thermostat Controls
+  # binary_sensor: Thermostat Controls
   - platform: nextion
     id: my_thermo_button
     page_id: 0
@@ -141,7 +143,7 @@ binary_sensor:
           target_temperature_high: !lambda |-
             return id(my_thermostat).target_temperature_high - 0.5;
 
-  ############ binary_sensor Page.Thermo's High-Low Buttons
+  # binary_sensor: Page.Thermo's High-Low Buttons
   - platform: nextion
     id: thermostat_low_up
     page_id: 1
@@ -151,6 +153,7 @@ binary_sensor:
           id: my_thermostat
           target_temperature_low: !lambda |-
             return id(my_thermostat).target_temperature_low + 0.5;
+
   - platform: nextion
     id: thermostat_low_dwn
     page_id: 1
@@ -170,6 +173,7 @@ binary_sensor:
           id: my_thermostat
           target_temperature_high: !lambda |-
             return id(my_thermostat).target_temperature_high + 0.5;
+
   - platform: nextion
     id: thermostat_high_dwn
     page_id: 1
@@ -180,7 +184,7 @@ binary_sensor:
           target_temperature_high: !lambda |-
             return id(my_thermostat).target_temperature_high - 0.5;
 
-  ############ binary_sensor Physical Buttons and Relays
+  # binary_sensor: Physical Buttons and Relays
   - platform: gpio
     id: panel_button_relay1
     name: NSP ${room} button1
@@ -190,6 +194,7 @@ binary_sensor:
     on_click:
       - switch.toggle: relay1
       - rtttl.play: "beep:d=32,o=7,b=100: d"
+
   - platform: gpio
     id: panel_button_relay2
     name: NSP ${room} button2
@@ -200,7 +205,7 @@ binary_sensor:
       - switch.toggle: relay2
       - rtttl.play: "beep:d=32,o=7,b=100: d"
 
-  ############ binary_sensor Any Button Beep
+  # binary_sensor: Any Button Beep
   - platform: nextion
     id: beeper
     page_id: 9
@@ -224,7 +229,7 @@ sensor:
               id(nspanel).send_command_printf("main.button1.val=1");
             }
 
-  ############ sensor Low & High temperatures from Climate
+  # sensor: Low & High temperatures from Climate
   - platform: template
     id: my_low_trg
     lambda: |-
@@ -241,7 +246,7 @@ sensor:
     on_value:
       - lambda: 'id(nspanel).set_component_text_printf("thermohightemp", "%.1f", x);'
 
-  ############ sensor Read internal Temp Sensor
+  # sensor: Read internal Temp Sensor
   - platform: resistance
     id: resistance_sensor
     sensor: ntc_source
@@ -265,7 +270,7 @@ sensor:
     on_value:
       - lambda: 'id(nspanel).set_component_text_printf("temp_local", "%.1f ""\xb0""C", x);'
 
-############ switch Panel Buttons to control Relays
+# switch: Panel Buttons to control Relays
 switch:
   - platform: gpio
     id: relay1
@@ -273,21 +278,21 @@ switch:
     icon: mdi:electric-switch
     pin:
       number: 22
-    ### switch Relay1 Bar On/Off - Add one per Page
+    # switch Relay1 Bar On/Off - Add one per Page
     on_turn_on:
       - lambda: id(nspanel).set_component_value("main.relay1", 1);
       - lambda: id(nspanel).set_component_value("thermo.relay1", 1);
     on_turn_off:
       - lambda: id(nspanel).set_component_value("main.relay1", 0);
       - lambda: id(nspanel).set_component_value("thermo.relay1", 0);
-  
+
   - platform: gpio
     id: relay2
     name: NSP ${room} relay2
     icon: mdi:electric-switch
     pin:
       number: 19
-    ### switch Relay2 Bar On/Off - Add one per Page
+    # switch Relay2 Bar On/Off - Add one per Page
     on_turn_on:
       - lambda: id(nspanel).set_component_value("main.relay2", 1);
       - lambda: id(nspanel).set_component_value("thermo.relay2", 1);
@@ -295,7 +300,7 @@ switch:
       - lambda: id(nspanel).set_component_value("main.relay2", 0);
       - lambda: id(nspanel).set_component_value("thermo.relay2", 0);
 
-  ############ switch Display Power Pin 4 On
+  # switch: Display Power Pin 4 On
   - platform: gpio
     id: panel_power
     entity_category: config
@@ -304,7 +309,7 @@ switch:
       inverted: true
     restore_mode: ALWAYS_ON
 
-############ Display Brightness Slider for HA
+# Display Brightness Slider for HA
 number:
   platform: template
   name: NSP ${room} brightness
@@ -320,7 +325,7 @@ number:
   on_value:
     - lambda: "id(nspanel).set_backlight_brightness(x/100);"
 
-############ Setup ESP Thermostat
+# ESP Thermostat Setup
 climate:
   - platform: thermostat
     id: my_thermostat
@@ -334,8 +339,18 @@ climate:
     visual:
       min_temperature: 15 °C
       max_temperature: 30 °C
-    default_target_temperature_low: 23.0
-    default_target_temperature_high: 26.0
+
+    ### Updated for ESPHome v2022.10.0 Onwards
+    default_preset: Home                      ### NEW! Use this to set Preset
+    # on_boot_restore_from: memory            ### Use this to "Restore From Memeory" (A Saved State) OR...
+    on_boot_restore_from: default_preset      ### Use this to set Preset to start on every Boot
+    preset:
+      - name: Home
+        default_target_temperature_low: 23.0
+        default_target_temperature_high: 26.0
+        mode: AUTO
+    ###########################################
+
     heat_action:
       - homeassistant.service:
           service: homeassistant.turn_on
@@ -363,10 +378,10 @@ climate:
             } else {
               id(nspanel).set_component_value("main.thermo", 0);
             };
-        ## Find the Half-way point between Target High and Target Low Temperature
+        # Find the Half-way point between Target High and Target Low Temperature
         - lambda: 'id(nspanel).set_component_text_printf("main.thermotemp", "%.1f ""\xb0""C", ((id(my_thermostat).target_temperature_high - id(my_thermostat).target_temperature_low)/2) + id(my_thermostat).target_temperature_low);'
 
-############ DIsplay Setup
+# Display Setup
 display:
   - platform: nextion
     id: nspanel
@@ -377,23 +392,26 @@ display:
       - lambda: |-
           id(nspanel).goto_page("main");
 
-############ Ringtone support
+# Ringtone support
 rtttl:
   id: buzzer
   output: buzzer_out
-############ Beeper Output
+
+# Beeper Output
 output:
   - platform: ledc
     id: buzzer_out
     pin:
       number: 21
-############ UART for Display
+
+# UART for Display
 uart:
   id: tf_uart
   tx_pin: 16
   rx_pin: 17
   baud_rate: 115200
-############ ESP Restart button
+
+# ESP Restart button
 button:
   - platform: restart
     name: NSP ${room} restart
