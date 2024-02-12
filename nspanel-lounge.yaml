@@ -1,9 +1,11 @@
+**************** REMOVE THIS FOR ESPHOME V 2023.12.0+ ********************
 # Note: this may not be needed if the pull request has been merged.
 # Check https://github.com/esphome/esphome/pull/2956 for current status.
 external_components:
   - source: github://pr#2956
     components: [nextion]
     refresh: 1h
+***************************************************************************
 
 substitutions:
   room: lounge
