@@ -38,6 +38,7 @@ logger:
     # homeassistant.sensor: none
 
 ota:
+  platform: esphome
 
 # Call Services: Play rtttl string and TFT Upload
 api:
